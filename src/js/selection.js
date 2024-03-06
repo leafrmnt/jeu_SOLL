@@ -33,6 +33,8 @@ export default class selection extends Phaser.Scene {
     this.load.image("img_porte1", "src/assets/door1.png");
     this.load.image("img_porte2", "src/assets/door2.png");
     this.load.image("img_porte3", "src/assets/door3.png");
+    this.load.image("img_porte4", "src/assets/door4.png");
+
   }
 
   /***********************************************************************/
@@ -81,6 +83,8 @@ export default class selection extends Phaser.Scene {
     this.porte1 = this.physics.add.staticSprite(600, 414, "img_porte1");
     this.porte2 = this.physics.add.staticSprite(50, 264, "img_porte2");
     this.porte3 = this.physics.add.staticSprite(750, 234, "img_porte3");
+    this.porte4 = this.physics.add.staticSprite(600, 234, "img_porte4");
+
 
     /****************************
      *  CREATION DU PERSONNAGE  *
@@ -170,6 +174,8 @@ export default class selection extends Phaser.Scene {
         this.scene.switch("niveau2");
       if (this.physics.overlap(player, this.porte3))
         this.scene.switch("niveau3");
+      if (this.physics.overlap(player, this.porte4))
+        this.scene.switch("niveau4");
     }
   }
 }

@@ -18,7 +18,7 @@ export default class niveau3 extends Phaser.Scene {
     // chargement tuiles de jeu
     this.load.image("Phaser_tuilesdejeu", "src/assets/jeu_de_tuile_niveau3.png");
     // chargement de la carte
-    this.load.tilemapTiledJSON("carte", "src/assets/map3.json");
+    this.load.tilemapTiledJSON("carte3", "src/assets/map3.json");
     this.load.image("img_plateforme_mobile", "src/assets/tiny_blue_platform.png");
     this.load.image("img_levier", "src/assets/levier.png");
     this.load.image("img_porte3fin", "src/assets/doorniv3.png");
@@ -33,7 +33,7 @@ export default class niveau3 extends Phaser.Scene {
 
   create() {
     // chargement de la carte
-    const carteDuNiveau = this.add.tilemap("carte");
+    const carteDuNiveau = this.add.tilemap("carte3");
     // chargement du jeu de tuiles
     const tileset1 = carteDuNiveau.addTilesetImage(
       "jeu_de_tuile_niveau3",

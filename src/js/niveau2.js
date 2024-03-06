@@ -24,14 +24,14 @@ export default class niveau2 extends Phaser.Scene {
 
     this.load.image("fleche_arme", "src/assets/fleches.png"); 
     // chargement de la carte
-    this.load.tilemapTiledJSON("carte", "src/assets/map2bis.json");
+    this.load.tilemapTiledJSON("carte2", "src/assets/map2bis.json");
     this.load.image("img_ennemi", "src/assets/ennemi.png");
     console.log("preload done");
   }
 
   create() {
     // chargement de la carte
-    const carteDuNiveau = this.add.tilemap("carte");
+    const carteDuNiveau = this.add.tilemap("carte2");
 
     // chargement du jeu de tuiles
     const tileset1 = carteDuNiveau.addTilesetImage("Preview", "desert");

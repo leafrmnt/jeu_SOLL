@@ -26,6 +26,8 @@ export default class niveau3 extends Phaser.Scene {
     this.load.image("img_coffre_ferme", "src/assets/coffre_ferme.png");
     this.load.image("img_coffre_ouvert", "src/assets/coffre_ouvert.png");
     this.load.image("boule_eau", "src/assets/boule_eau.png");
+    this.load.image("ericdeb", "src/assets/Eric_debut.png");
+    this.load.image("ericfin", "src/assets/Eric_fin.png");
 
   }
 
@@ -65,6 +67,8 @@ export default class niveau3 extends Phaser.Scene {
       fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
       fontSize: "22pt"
     });
+    this.ericdebImage = this.add.image(300, 200, 'ericdeb');
+    this.time.delayedCall(10000, this.fermerImage, [], this);
 
     this.porte_retour = this.physics.add.staticSprite(50, 588, "img_porte3");
     this.porte_fin = this.physics.add.staticSprite(3100, 50, "img_porte3fin");
@@ -207,10 +211,22 @@ export default class niveau3 extends Phaser.Scene {
     if (Phaser.Input.Keyboard.JustDown(this.clavier.space)) {
       this.tirerBouleEauJoueur();
     }
-    if (Phaser.Input.Keyboard.JustDown(this.clavier.space) == true) {
-      if (this.physics.overlap(this.player, this.porte_fin)) {
+    // Autres actions à effectuer lors de l'appui sur la touche Shift
+    if (this.physics.overlap(this.player, this.porte_fin) && Phaser.Input.Keyboard.JustDown(this.clavier.shift)) {
+      // Affichez l'image "ercifin"
+      this.ericfinImage = this.add.image(2900, 100, 'ericfin');
+
+      // Ajoutez un délai de 5 secondes pour fermer l'image et changer de scène
+      this.time.delayedCall(4000, () => {
+        // Masquez l'image "ericfin"
+        this.ericfinImage.visible = false;
+
+        // Changez de scène
         this.scene.switch("selection");
-      }
+      }, [], this);
+    }
+
+    if (this.physics.overlap(this.player, this.levier) && Phaser.Input.Keyboard.JustDown(this.clavier.shift)) {
       if (this.levier.active == true) {
         this.levier.active = false;
         this.levier.flipX = false;
@@ -221,6 +237,10 @@ export default class niveau3 extends Phaser.Scene {
         this.tween_mouvement.resume();
       }
     }
+
+   
+
+
 
     groupe_ennemis.children.iterate(function (un_ennemi) {
       const distance = Phaser.Math.Distance.Between(un_ennemi.x, un_ennemi.y, this.player.x, this.player.y);
@@ -245,6 +265,7 @@ export default class niveau3 extends Phaser.Scene {
 
       }
     });
+
   }
 
   playerEnemyCollision(player, enemy) {
@@ -331,11 +352,19 @@ export default class niveau3 extends Phaser.Scene {
   }
   bouleToucheBoss(bouleDeau, ennemi) {
     //console.log(bouleDeau);
-    //console.log(ennemi);
+    console.log(" ");
     bouleDeau.destroy();
     ennemi.destroy();
   }
-
+  fermerImage() {
+    // Masquer l'image "ericdeb"
+    this.ericdebImage.visible = false;
+  }
+  fermerErcifinImage() {
+    // Masquez l'image "ercifin"
+    this.ericfinImage.visible = false;
+    // Redirigez le joueur vers la scène de sélection
+  }
 }
 
 

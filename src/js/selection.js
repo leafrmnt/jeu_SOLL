@@ -60,6 +60,22 @@ export default class selection extends Phaser.Scene {
     this.porte3 = this.physics.add.staticSprite(1100, 492, "img_porte3");
     this.porte4 = this.physics.add.staticSprite(1430, 492, "img_porte4");
 
+    this.add.text(450, 450, "Niveau 1", {
+      fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
+      fontSize: "11pt"
+    });
+    this.add.text(780, 450, "Niveau 2", {
+      fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
+      fontSize: "11pt"
+    });
+    this.add.text(1080, 450, "Niveau 3", {
+      fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
+      fontSize: "11pt"
+    });
+    this.add.text(1370, 450, "Niveau Final", {
+      fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
+      fontSize: "11pt"
+    });
     /****************************
      *  CREATION DU PERSONNAGE  *
      ****************************/

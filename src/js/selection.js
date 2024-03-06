@@ -8,6 +8,9 @@ var player; // désigne le sprite du joueur
 var clavier; // pour la gestion du clavier
 var groupe_plateformes;
 
+
+
+
 // définition de la classe "selection"
 export default class selection extends Phaser.Scene {
   constructor() {

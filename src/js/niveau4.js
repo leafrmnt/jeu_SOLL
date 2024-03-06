@@ -13,7 +13,6 @@ export default class niveau4 extends Phaser.Scene {
     this.load.image("Phaser_ciel", "src/assets/Nebula Red.png");
     this.load.image("Phaser_arbre", "src/assets/arbre.png");
     this.load.image("Phaser_boule_de_feu", "src/assets/fireball.png");
-    this.load.image("Phaser_face", "src/assets/bossface.png");
     this.load.image("img_coffre_ferme", "src/assets/coffre_ferme.png");
     this.load.image("img_coffre_ouvert", "src/assets/coffre_ouvert.png");
     this.load.image("boule_feu", "src/assets/boule_feu.png");
@@ -26,18 +25,18 @@ export default class niveau4 extends Phaser.Scene {
     });
 
 
-    this.load.tilemapTiledJSON("carte", "src/assets/map4.json");
+    this.load.tilemapTiledJSON("carte4", "src/assets/map4.json");
   }
 
   create() {
-    const carteDuNiveau = this.add.tilemap("carte");
+    const carteDuNiveau = this.add.tilemap("carte4");
     const tileset1 = carteDuNiveau.addTilesetImage("red", "Phaser_tuilesdejeu");
     const tileset2 = carteDuNiveau.addTilesetImage("Nebula Red", "Phaser_ciel");
     const tileset3 = carteDuNiveau.addTilesetImage("arbre", "Phaser_arbre");
 
     const fondniv1 = carteDuNiveau.createLayer("fondniv1", tileset2);
     calqueniv1 = carteDuNiveau.createLayer("calqueniv1", tileset1);
-    const arbre = carteDuNiveau.createLayer("arbre", tileset3)
+    const arbre = carteDuNiveau.createLayer("arbre", tileset3);
 
     calqueniv1.setCollisionByProperty({ estSolide: true });
 
@@ -81,6 +80,7 @@ export default class niveau4 extends Phaser.Scene {
 
 
     this.physics.add.collider(this.player, calqueniv1);
+
 
     this.physics.world.setBounds(0, 0, 3200, 640);
     this.cameras.main.setBounds(0, 0, 3200, 640);

@@ -117,12 +117,12 @@ export default class niveau3 extends Phaser.Scene {
       targets: [this.plateforme_mobile], // on applique le tween sur plateforme_mobile
       paused: true, // de base le tween est en pause
       ease: "Linear", // concerne la vitesse de mouvement : linéaire ici
-      duration: 5000, // durée de l'animation pour monter
+      duration: 15000, // durée de l'animation pour monter
       yoyo: true, // mode yoyo : une fois terminé on "rembobine" le déplacement
       y: "-=300", // on va déplacer la plateforme de 300 pixel vers le haut par rapport a sa position
-      delay: 0, // délai avant le début du tween une fois ce dernier activé
-      hold: 1000, // délai avant le yoyo : temps que la plate-forme reste en haut
-      repeatDelay: 1000, // deléi avant la répétition : temps que la plate-forme reste en bas
+      delay: 4000, // délai avant le début du tween une fois ce dernier activé
+      hold: 1200, // délai avant le yoyo : temps que la plate-forme reste en haut
+      repeatDelay: 1200, // deléi avant la répétition : temps que la plate-forme reste en bas
       repeat: -1 // répétition infinie
     });
     // Création du levier

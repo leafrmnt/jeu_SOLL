@@ -48,9 +48,9 @@ export default class niveau4 extends Phaser.Scene {
     this.time.delayedCall(10000, this.fermerImage, [], this);
 
     //PORTE//
-    this.porte_retour = this.physics.add.staticSprite(100, 530, "img_porte4");
+    this.porte_retour = this.physics.add.staticSprite(100, 490, "img_porte4");
 
-    //
+    //COFFRE//
     this.coffre_ferme = this.physics.add.sprite(400, 530, "img_coffre_ferme");
     this.coffre_ferme.setScale(0.20);
     this.coffre_ferme.setCollideWorldBounds(true);
@@ -58,6 +58,7 @@ export default class niveau4 extends Phaser.Scene {
     this.physics.add.collider(this.coffre_ferme, this.groupe_plateformes);
     this.resetChest();
 
+    //PLAYER//
     this.player = this.physics.add.sprite(100, 450, "img_perso");
     this.player.refreshBody();
     this.player.setBounce(0.2);
@@ -65,6 +66,7 @@ export default class niveau4 extends Phaser.Scene {
     this.clavier = this.input.keyboard.createCursorKeys();
     this.physics.add.collider(this.player, calqueniv1);
 
+    //ANIM BOSS//
     this.anims.create({
       key: "animation_boss",
       frames: this.anims.generateFrameNumbers("boss", { start: 0, end: 3 }), // Utilisation des frames 0 à 7
@@ -72,6 +74,7 @@ export default class niveau4 extends Phaser.Scene {
       repeat: -1 // Répétition infinie de l'animation
     });
 
+    //MONSTRE//
     this.monstre = this.physics.add.sprite(800, 300, "Phaser_face");
     this.monstre.setBounce(0.2);
     this.monstre.setScale(3); 
@@ -82,6 +85,7 @@ export default class niveau4 extends Phaser.Scene {
     this.physics.add.collider(this.monstre, calqueniv1);
     this.vieBoss = 30;
 
+    //CAMERA//
     this.physics.add.collider(this.player, calqueniv1);
     this.physics.world.setBounds(0, 0, 3200, 640);
     this.cameras.main.setBounds(0, 0, 3200, 640);
@@ -99,6 +103,7 @@ export default class niveau4 extends Phaser.Scene {
       loop: true
     });
 
+    //BARRE DE VIE//
     this.barreDeVie = this.add.graphics();
     this.majBarreDeVie();
 
@@ -175,7 +180,6 @@ export default class niveau4 extends Phaser.Scene {
     const hauteurBarre = 20;
     // Position de la barre de vie au-dessus de la tête du boss
     const xBarre = this.monstre.x - largeurBarre / 2;
-    const yBarre = this.monstre.y - 50;
     const yBarre = this.monstre.y - 50;
     this.barreDeVie.clear();
     this.barreDeVie.fillStyle(0xff0000);

@@ -1,5 +1,8 @@
 var plateformeniv2;
 var groupe_ennemis;
+let ennemisTues = 0;
+var coupDeLionel;
+
 
 export default class niveau2 extends Phaser.Scene {
 
@@ -10,6 +13,9 @@ export default class niveau2 extends Phaser.Scene {
     });
     //this.groupe_ennemis; // Déclaration de la variable groupe_ennemis
     this.flecheRecuperee = false;
+    this.coffre_ouvert = false; // Utilisé pour suivre l'état d'ouverture du coffre
+    this.spriteCoffreOuvert = null; // Utilisé pour stocker la référence au sprite du coffre ouvert
+
   }
 
   preload() {
@@ -18,14 +24,16 @@ export default class niveau2 extends Phaser.Scene {
     this.load.image("sable", "src/assets/SAND.png");
     this.load.image("desert", "src/assets/Preview.png");
     this.load.image("herbe", "src/assets/Grass.png");
-    this.load.image("img_coffre_ferme", "src/assets/coffre_ferme.png"); 
+    this.load.image("img_coffre_ferme", "src/assets/coffre_ferme.png");
+    this.load.image("img_porte3fin", "src/assets/doorniv3.png");
+    this.load.image("img_coffre_ouvert", "src/assets/coffre_ouvert.png");
+    this.load.image("fleche_arme", "src/assets/fleches.png");
+    this.load.image("img_ennemi", "src/assets/ennemi.png");
+    this.load.audio("lionel", "src/assets/Lionel.mp3");
 
-    this.load.image("img_coffre_ouvert", "src/assets/coffre_ouvert.png"); 
 
-    this.load.image("fleche_arme", "src/assets/fleches.png"); 
     // chargement de la carte
     this.load.tilemapTiledJSON("carte2", "src/assets/map2bis.json");
-    this.load.image("img_ennemi", "src/assets/ennemi.png");
     console.log("preload done");
   }
 
@@ -54,6 +62,11 @@ export default class niveau2 extends Phaser.Scene {
     // utilisation de la propriété estSolide
     plateformeniv2.setCollisionByProperty({ estSolide: true });
 
+    this.porte_fin = this.physics.add.staticSprite(3000, 68, "img_porte3fin");
+    
+    coupDeLionel = this.sound.add('lionel');
+
+
     groupe_ennemis = this.physics.add.group();
 
 
@@ -61,8 +74,8 @@ export default class niveau2 extends Phaser.Scene {
     this.add.text(400, 100, "Vous êtes dans le niveau 2", {
       fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
       fontSize: "22pt"
-    }); 
-    this.coffre_ferme = this.physics.add.sprite(100, 280, "img_coffre_ferme"); 
+    });
+    this.coffre_ferme = this.physics.add.sprite(100, 280, "img_coffre_ferme");
 
     this.coffre_ferme.setScale(0.20); // Réduire l'échelle de l'image de moitié 
 
@@ -73,7 +86,7 @@ export default class niveau2 extends Phaser.Scene {
     this.physics.add.collider(this.coffre_ferme, this.groupe_plateformes); // Ajouter une collision avec les plateformes 
 
     this.resetChest(); // Réinitialiser l'état du coffre
-    
+
     this.player = this.physics.add.sprite(50, 200, "img_perso");
 
     this.player.refreshBody();
@@ -123,19 +136,19 @@ export default class niveau2 extends Phaser.Scene {
         groupe_ennemis.add(nouvel_ennemi);
       }
     });
- 
+
     // par défaut, on va a gauche en utilisant la meme animation que le personnage
     groupe_ennemis.children.iterate(function iterateur(un_ennemi) {
       un_ennemi.setVelocityX(-40);
       un_ennemi.direction = "gauche";
-      
+
     });
     this.physics.add.collider(groupe_ennemis, plateformeniv2);
-   
-   
+
+
     this.physics.add.collider(this.player, groupe_ennemis, this.playerEnnemiCollision, null, this);
 
-    
+
   }
 
 
@@ -151,8 +164,8 @@ export default class niveau2 extends Phaser.Scene {
     } else {
       this.player.setVelocityX(0);
       this.player.anims.play("anim_face");
-    } 
-  
+    }
+
 
     if (this.clavier.up.isDown && this.player.body.blocked.down) {
       this.player.setVelocityY(-330);
@@ -174,7 +187,7 @@ export default class niveau2 extends Phaser.Scene {
           // on risque de marcher dans le vide, on tourne
           un_ennemi.direction = "droite";
           un_ennemi.setVelocityX(40);
-          
+
         }
       } else if (un_ennemi.direction == "droite" && un_ennemi.body.blocked.down) {
         var coords = un_ennemi.getBottomRight();
@@ -186,28 +199,37 @@ export default class niveau2 extends Phaser.Scene {
           // on risque de marcher dans le vide, on tourne
           un_ennemi.direction = "gauche";
           un_ennemi.setVelocityX(-40);
-          
+
         }
-        
+
       }
-      
+
     });
 
 
-    console.log("before group ennemis");
-    console.log("after ennemis done");
     this.checkNearbyChest();
-    this.input.keyboard.on('keydown-A', () => { 
+    this.input.keyboard.on('keydown-A', () => {
 
-      if (this.physics.overlap(this.player, this.flechearme)) { 
+      if (this.physics.overlap(this.player, this.flechearme)) {
 
-        this.flechearme.destroy(); 
+        this.flechearme.destroy();
 
-        this.flecheRécupérée = true; 
+        this.flecheRécupérée = true;
 
-      } 
+      }
 
-    }); 
+    });
+
+    if (this.input.keyboard.addKey('A').isDown) {
+      if (this.physics.overlap(this.player, this.fleche)) {
+        this.pickupArrow(); // Appeler la fonction pour ramasser la flèche
+      }
+    }
+
+    if (ennemisTues >= 2 && this.physics.overlap(this.player, this.porte_fin) && Phaser.Input.Keyboard.JustDown(this.clavier.shift)) {
+      this.scene.switch("selection");
+  }
+    
   }
 
   playerEnnemiCollision(player, ennemi) {
@@ -217,113 +239,109 @@ export default class niveau2 extends Phaser.Scene {
     // Affichez un message ou une animation pour indiquer que le joueur est touché
     console.log('Le joueur est touché par un ennemi !');
     this.scene.restart();
-}
+  }
 
-checkNearbyChest() { 
+  checkNearbyChest() {
 
-  const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.coffre_ferme.x, this.coffre_ferme.y); 
+    const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.coffre_ferme.x, this.coffre_ferme.y);
 
-  if (distance < 50 && !this.coffre_ouvert) { 
+    if (distance < 50 && !this.coffre_ouvert) {
 
-    this.interactionCoffre(); 
+      this.interactionCoffre();
 
-  } 
+    }
 
-} 
+  }
 
 
-interactionCoffre() { 
-  if (!this.coffre_ouvert) { 
+  interactionCoffre() { 
+    if (!this.coffre_ouvert) { 
       this.coffre_ferme.setVisible(false); 
-      this.coffre_ouvert = this.physics.add.sprite(100, 280, "img_coffre_ouvert"); 
-      this.coffre_ouvert.setScale(0.17); 
-      this.coffre_ouvert.setCollideWorldBounds(true); 
-      this.coffre_ouvert.body.setAllowGravity(false); 
+      this.coffre_ouvert = true; // Maintenant, cela indique simplement l'état d'ouverture
       
-      // Utilisez "fleche_arme" pour charger l'image de la flèche
-      this.flechearme = this.physics.add.sprite(this.coffre_ouvert.x, this.coffre_ouvert.y, "fleche_arme"); 
+      // Création et configuration du sprite du coffre ouvert (reste affiché aux mêmes dimensions)
+      this.coffre_ouvert_sprite = this.add.sprite(this.coffre_ferme.x, this.coffre_ferme.y, "img_coffre_ouvert");
+      this.coffre_ouvert_sprite.setScale(0.20); // Même échelle que le coffre fermé
+      this.coffre_ouvert_sprite.setDepth(this.coffre_ferme.depth); // Même profondeur que le coffre fermé
+      // Ajoutez d'autres configurations si nécessaire
+      // ...
       
-      this.flechearme.setVisible(true); 
-      this.flechearme.setCollideWorldBounds(true); 
-      this.physics.add.collider(this.flechearme, this.groupe_plateformes); 
-      this.physics.add.collider(this.flechearme, plateformeniv2); 
-      this.flechearme.setVelocityY(-200); 
+      // Création et configuration du sprite de la flèche
+      this.fleche = this.physics.add.sprite(this.coffre_ouvert_sprite.x, this.coffre_ouvert_sprite.y, "fleche_arme");
+      this.fleche.setScale(0.5); // Échelle de la flèche
+      this.fleche.setCollideWorldBounds(true); // Permettre la collision avec les bords du monde
+      this.fleche.body.setAllowGravity(true); // Activer la gravité pour la flèche
       
-      if (!this.flecheRécupérée && this.physics.overlap(this.player, this.flechearme)) { 
-          this.flecheRécupérée = true; // Définir la boule d'eau comme récupérée 
-          this.flechearme.destroy(); // Détruire la boule d'eau 
-      } 
-  } 
-}
+      // Ajout de la collision de la flèche avec plateformeniv2
+      this.physics.add.collider(this.fleche, plateformeniv2);
+    } 
+  }
+  
+  // Quand vous réinitialisez le coffre
+  resetChest() { 
+    if (this.fleche) { 
+      this.fleche.destroy(); // Détruire la flèche si elle existe
+    } 
+    
+    if (this.coffre_ouvert_sprite) { 
+      // Ne détruisez pas le sprite du coffre ouvert, laissez-le visible
+    }
+    
+    this.coffre_ferme.setVisible(true); 
+    this.coffre_ouvert = false; // Réinitialiser l'état d'ouverture
+  }
+  
+  
+  tirerflecheJoueur() {
+
+    if (this.flecheRécupérée) {
+
+      const flecheArme = this.physics.add.sprite(this.player.x, this.player.y, "fleche_arme");
+
+      flecheArme.body.allowGravity = false;
 
 
 
+      // Déterminez la direction dans laquelle le joueur est orienté 
 
-resetChest() { 
+      const directionX = this.clavier.right.isDown ? 1 : this.clavier.left.isDown ? -1 : 0;
 
-  if (this.coffre_ouvert) { 
+      const directionY = this.clavier.down.isDown ? 1 : this.clavier.up.isDown ? -1 : 0;
 
-    this.coffre_ouvert.destroy(); 
+      // Normalisez la direction pour éviter une vitesse plus rapide en diagonale 
 
-    this.coffre_ouvert = null; 
+      const norm = Math.sqrt(directionX * directionX + directionY * directionY);
 
-  } 
+      const velocityX = directionX / norm * 200;
 
-  this.coffre_ferme.setVisible(true); 
+      const velocityY = directionY / norm * 200;
 
-  this.coffre_ouvert = false; 
+      flecheArme.setVelocity(velocityX, velocityY);
 
-} 
+      //console.log(groupe_ennemis); 
 
+      this.physics.add.collider(flecheArme, groupe_ennemis, this.bouleToucheBoss, null, this);
 
+    }
 
-tirerflecheJoueur() { 
+  }
 
-  if (this.flecheRécupérée) { 
+  bouleToucheBoss(flecheArme, ennemi) {
+    //console.log(bouleDeau); 
+    console.log(" ");
+    flecheArme.destroy();
+    ennemi.destroy();
+    ennemisTues++;
+    coupDeLionel.play();
+    //coupDeLionel.stop();
+  }
 
-    const flecheArme = this.physics.add.sprite(this.player.x, this.player.y, "fleches"); 
-
-    flecheArme.body.allowGravity = false; 
-
-
-
-    // Déterminez la direction dans laquelle le joueur est orienté 
-
-    const directionX = this.clavier.right.isDown ? 1 : this.clavier.left.isDown ? -1 : 0; 
-
-    const directionY = this.clavier.down.isDown ? 1 : this.clavier.up.isDown ? -1 : 0; 
-
-    // Normalisez la direction pour éviter une vitesse plus rapide en diagonale 
-
-    const norm = Math.sqrt(directionX * directionX + directionY * directionY); 
-
-    const velocityX = directionX / norm * 200; 
-
-    const velocityY = directionY / norm * 200; 
-
-    flecheArme.setVelocity(velocityX, velocityY); 
-
-    //console.log(groupe_ennemis); 
-
-    this.physics.add.collider(flecheArme, groupe_ennemis, this.bouleToucheBoss, null, this); 
-
-  } 
-
-} 
-
-bouleToucheBoss(flecheArme, ennemi) { 
-
-  //console.log(bouleDeau); 
-
-  console.log(" "); 
-
-  flecheArme.destroy(); 
-
-  ennemi.destroy(); 
-
-} 
-
-
+  pickupArrow() {
+    if (this.fleche && this.fleche.body && this.fleche.body.enable) {
+      this.fleche.destroy(); // Détruire la flèche
+      this.flecheRécupérée = true; // Définir la flèche comme récupérée
+    }
+  }
 
 }
 

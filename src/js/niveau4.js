@@ -18,6 +18,10 @@ export default class niveau4 extends Phaser.Scene {
     this.load.image("boule_feu", "src/assets/boule_feu.png");
     this.load.image("boule_eau", "src/assets/boule_eau.png");
     this.load.image("couteau", "src/assets/couteau.png");
+    this.load.image("dartiesdebut", "src/assets/dartiesdeb.png");
+    this.load.image("image_victoire", "src/assets/dartiesfin.png");
+
+
 
     this.load.spritesheet("boss", "src/assets/boss.png", {
       frameWidth: 160,
@@ -45,13 +49,17 @@ export default class niveau4 extends Phaser.Scene {
       fontSize: "22pt"
     });
 
+    this.dartiesdebutImage = this.add.image(300, 200, 'dartiesdebut');
+    this.time.delayedCall(10000, this.fermerImage, [], this);
+
+
     this.porte_retour = this.physics.add.staticSprite(100, 530, "img_porte4");
     this.coffre_ferme = this.physics.add.sprite(400, 530, "img_coffre_ferme");
-    this.coffre_ferme.setScale(0.20); // Réduire l'échelle de l'image de moitié
-    this.coffre_ferme.setCollideWorldBounds(true); // Permettre la collision avec les bords du monde
-    this.coffre_ferme.body.setAllowGravity(false); // Désactiver la gravité pour le coffre
-    this.physics.add.collider(this.coffre_ferme, this.groupe_plateformes); // Ajouter une collision avec les plateformes
-    this.resetChest(); // Réinitialiser l'état du coffre
+    this.coffre_ferme.setScale(0.20);
+    this.coffre_ferme.setCollideWorldBounds(true);
+    this.coffre_ferme.body.setAllowGravity(false);
+    this.physics.add.collider(this.coffre_ferme, this.groupe_plateformes);
+    this.resetChest();
 
     this.player = this.physics.add.sprite(100, 450, "img_perso");
     this.player.refreshBody();
@@ -76,8 +84,6 @@ export default class niveau4 extends Phaser.Scene {
     this.monstre.anims.play("animation_boss", true); // Lancement de l'animation dès la création du sprite
     this.physics.add.collider(this.monstre, calqueniv1);
     this.vieBoss = 30;
-
-
 
     this.physics.add.collider(this.player, calqueniv1);
 
@@ -113,6 +119,11 @@ export default class niveau4 extends Phaser.Scene {
   }
 
   tirerBouleDeFeu() {
+    if (this.vieBoss <= 0) {
+      // Si le boss est mort, sortir de la fonction sans tirer de boule de feu
+      return;
+    }
+
     const bouleDeFeu = this.boulesDeFeu.create(this.monstre.x, this.monstre.y, "Phaser_boule_de_feu");
     bouleDeFeu.setScale(0.01);
     bouleDeFeu.body.allowGravity = false;
@@ -127,6 +138,7 @@ export default class niveau4 extends Phaser.Scene {
     this.physics.add.collider(bouleDeFeu, this.player, this.playerTouche, null, this);
   }
 
+
   playerTouche(bouleDeFeu, player) {
     console.log("Le joueur est touché par une boule de feu !");
     player.disableBody(true, true);
@@ -137,8 +149,10 @@ export default class niveau4 extends Phaser.Scene {
   }
 
   tirerBouleDeFeuJoueur() {
-    // Vérifier si le joueur a récupéré la boule de feu du coffre
-    if (this.bouleFeuRécupérée) {
+    // Vérifiez si le boss est toujours défini et qu'il n'a pas été détruit
+    if (this.monstre && this.monstre.body) {
+      // Vérifiez si le joueur a récupéré la boule de feu du coffre
+      if (this.bouleFeuRécupérée) {
         const bouleDeFeu = this.boulesDeFeu.create(this.player.x, this.player.y, "Phaser_boule_de_feu");
         bouleDeFeu.setScale(0.01);
         bouleDeFeu.body.allowGravity = false;
@@ -148,12 +162,16 @@ export default class niveau4 extends Phaser.Scene {
         const directionY = this.clavier.down.isDown ? 1 : this.clavier.up.isDown ? -1 : 0;
         // Normalisez la direction pour éviter une vitesse plus rapide en diagonale
         const norm = Math.sqrt(directionX * directionX + directionY * directionY);
-        const velocityX = directionX / norm * 200;
-        const velocityY = directionY / norm * 200;
-        bouleDeFeu.setVelocity(velocityX, velocityY);
+        if (norm !== 0) { // Assurez-vous que la direction n'est pas nulle pour éviter les valeurs NaN
+          const velocityX = directionX / norm * 200;
+          const velocityY = directionY / norm * 200;
+          bouleDeFeu.setVelocity(velocityX, velocityY);
+        }
         this.physics.add.collider(bouleDeFeu, this.monstre, this.bouleDeFeuToucheBoss, null, this);
+      }
     }
-}
+  }
+
 
 
   bouleDeFeuToucheBoss(bouleDeFeu, boss) {
@@ -167,7 +185,7 @@ export default class niveau4 extends Phaser.Scene {
     const hauteurBarre = 20;
     // Position de la barre de vie au-dessus de la tête du boss
     const xBarre = this.monstre.x - largeurBarre / 2;
-    const yBarre = this.monstre.y - 50; 
+    const yBarre = this.monstre.y - 50;
     this.barreDeVie.clear();
     this.barreDeVie.fillStyle(0xff0000);
     this.barreDeVie.fillRect(xBarre, yBarre, largeurBarre, hauteurBarre);
@@ -221,22 +239,26 @@ export default class niveau4 extends Phaser.Scene {
     const norm = Math.sqrt(directionX * directionX + directionY * directionY);
     // Vérification si le boss doit suivre le joueur
     const distanceMinimale = 600; // Distance minimale pour que le boss commence à suivre le joueur
-    if (norm < distanceMinimale) {
-      // Ajustement de la vélocité du boss pour qu'il se déplace vers le joueur
-      const vitesse = 100; // Vitesse de déplacement du boss
-      const velocityX = directionX / norm * vitesse;
-      const velocityY = directionY / norm * vitesse;
-      this.monstre.setVelocity(velocityX, velocityY);
-    } else {
-      // Arrêt du mouvement du boss s'il est trop loin du joueur
-      this.monstre.setVelocity(0, 0);
+    // Vérifiez si le boss est défini et a un corps avant de lui donner une vélocité
+    if (this.monstre && this.monstre.body) {
+      if (norm < distanceMinimale) {
+        // Ajustement de la vélocité du boss pour qu'il se déplace vers le joueur
+        const vitesse = 100; // Vitesse de déplacement du boss
+        const velocityX = directionX / norm * vitesse;
+        const velocityY = directionY / norm * vitesse;
+        this.monstre.setVelocity(velocityX, velocityY);
+      } else {
+        // Arrêt du mouvement du boss s'il est trop loin du joueur
+        this.monstre.setVelocity(0, 0);
+      }
     }
+
 
     this.physics.world.collide(this.boulesDeFeuJoueur, this.monstre, this.bouleDeFeuToucheBoss, null, this);
     this.checkNearbyChest();
 
-     // Récupération des objets lorsque la touche "A" est enfoncée
-     this.input.keyboard.on('keydown-A', () => {
+    // Récupération des objets lorsque la touche "A" est enfoncée
+    this.input.keyboard.on('keydown-A', () => {
       if (this.physics.overlap(this.player, this.boule_feu)) {
         this.boule_feu.destroy();
         this.bouleFeuRécupérée = true;
@@ -244,8 +266,6 @@ export default class niveau4 extends Phaser.Scene {
 
     });
 
- 
-     
   }
 
   checkNearbyChest() {
@@ -255,7 +275,7 @@ export default class niveau4 extends Phaser.Scene {
     }
   }
 
-    interactionCoffre() {
+  interactionCoffre() {
 
     if (!this.coffre_ouvert) {
       this.coffre_ferme.setVisible(false);
@@ -283,10 +303,18 @@ export default class niveau4 extends Phaser.Scene {
     this.coffre_ferme.setVisible(true);
     this.coffre_ouvert = false;
   }
+
+  fermerImage() {
+    this.dartiesdebutImage.visible = false;
+  }
+
+  victoire() {
+    this.monstre.destroy();
+    const imageVictoire = this.add.image(this.monstre.x, this.monstre.y, 'image_victoire');
+    imageVictoire.setOrigin(0.5, 0.5); 
+    imageVictoire.setScale(1.5); 
+    this.barreDeVie.clear();
+
+  }
+
 }
-
-
-
-// Méthode appelée lorsque le joueur gagne
-//victoire() ;{}
-

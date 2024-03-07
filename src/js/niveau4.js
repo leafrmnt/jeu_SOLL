@@ -7,7 +7,7 @@ export default class niveau4 extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("Phaser_tuilesdejeu", "src/assets/red.png");
+    this.load.image("Phaser_tuilesdejeu4", "src/assets/red.png");
     this.load.image("Phaser_ciel", "src/assets/Nebula Red.png");
     this.load.image("Phaser_arbre", "src/assets/arbre.png");
     this.load.image("Phaser_boule_de_feu", "src/assets/fireball.png");
@@ -31,7 +31,7 @@ export default class niveau4 extends Phaser.Scene {
   create() {
     //MAP//
     const carteDuNiveau = this.add.tilemap("carte4");
-    const tileset1 = carteDuNiveau.addTilesetImage("red", "Phaser_tuilesdejeu");
+    const tileset1 = carteDuNiveau.addTilesetImage("red", "Phaser_tuilesdejeu4");
     const tileset2 = carteDuNiveau.addTilesetImage("Nebula Red", "Phaser_ciel");
     const tileset3 = carteDuNiveau.addTilesetImage("arbre", "Phaser_arbre");
     const fondniv1 = carteDuNiveau.createLayer("fondniv1", tileset2);

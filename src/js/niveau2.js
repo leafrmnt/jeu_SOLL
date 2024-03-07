@@ -15,7 +15,7 @@ export default class niveau2 extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("Phaser_tuilesdejeu", "src/assets/tuilesJeu.png");
+    this.load.image("Phaser_tuilesdejeu2", "src/assets/tuilesJeu.png");
     this.load.image("sable", "src/assets/SAND.png");
     this.load.image("desert", "src/assets/Preview.png");
     this.load.image("herbe", "src/assets/Grass.png");
@@ -34,7 +34,7 @@ export default class niveau2 extends Phaser.Scene {
     const carteDuNiveau = this.add.tilemap("carte2");
     const tileset1 = carteDuNiveau.addTilesetImage("Preview", "desert");
     const tileset2 = carteDuNiveau.addTilesetImage("SAND", "sable");
-    const tileset3 = carteDuNiveau.addTilesetImage("tuilesJeu", "Phaser_tuilesdejeu");
+    const tileset3 = carteDuNiveau.addTilesetImage("tuilesJeu", "Phaser_tuilesdejeu2");
     const tileset4 = carteDuNiveau.addTilesetImage("Grass", "herbe");
     const calque_backgroundniv2 = carteDuNiveau.createLayer(" calque_background", tileset1);
     plateformeniv2 = carteDuNiveau.createLayer(

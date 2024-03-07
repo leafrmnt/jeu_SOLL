@@ -11,8 +11,6 @@ export default class niveau3 extends Phaser.Scene {
     this.plateforme_mobile;
     this.levier;
     this.bouleEauRecuperee = false;
-
-
   }
   preload() {
     // chargement tuiles de jeu
@@ -21,14 +19,13 @@ export default class niveau3 extends Phaser.Scene {
     this.load.tilemapTiledJSON("carte3", "src/assets/map3.json");
     this.load.image("img_plateforme_mobile", "src/assets/tiny_blue_platform.png");
     this.load.image("img_levier", "src/assets/levier.png");
-    this.load.image("img_porte3fin", "src/assets/doorniv3.png");
-    this.load.image("img_ennemi", "src/assets/ennemi.png");
+    this.load.image("img_porte3fin", "src/assets/door3.png");
+    this.load.image("img_requin", "src/assets/requin.png");
     this.load.image("img_coffre_ferme", "src/assets/coffre_ferme.png");
     this.load.image("img_coffre_ouvert", "src/assets/coffre_ouvert.png");
     this.load.image("boule_eau", "src/assets/boule_eau.png");
     this.load.image("ericdeb", "src/assets/Eric_debut.png");
     this.load.image("ericfin", "src/assets/Eric_fin.png");
-
   }
 
   create() {
@@ -70,8 +67,7 @@ export default class niveau3 extends Phaser.Scene {
     this.ericdebImage = this.add.image(300, 200, 'ericdeb');
     this.time.delayedCall(10000, this.fermerImage, [], this);
 
-    this.porte_retour = this.physics.add.staticSprite(50, 588, "img_porte3");
-    this.porte_fin = this.physics.add.staticSprite(3100, 50, "img_porte3fin");
+    this.porte_fin = this.physics.add.staticSprite(3145, 60, "img_porte3fin");
     this.coffre_ferme = this.physics.add.sprite(270, 435, "img_coffre_ferme");
     this.coffre_ferme.setScale(0.20); // Réduire l'échelle de l'image de moitié
     this.coffre_ferme.setCollideWorldBounds(true); // Permettre la collision avec les bords du monde
@@ -83,10 +79,8 @@ export default class niveau3 extends Phaser.Scene {
     this.player.refreshBody();
     this.player.setBounce(0.2);
     this.player.setDepth(50);
-
     this.player.setCollideWorldBounds(true);
     this.player.body.onWorldBounds = true;
-
     // on met en place l'écouteur sur les bornes du monde
     // Dans la fonction de rappel de l'événement worldbounds
     this.player.body.world.on(
@@ -102,18 +96,14 @@ export default class niveau3 extends Phaser.Scene {
             color: '#ffffff'
           });
           deathMessage.setOrigin(0.5);
-
           // Mettre à jour la couleur du joueur
           this.player.setTint(0xff0000);
-
           // Retarder la renaissance du joueur pour un court instant
           this.time.delayedCall(1000, () => {
             // Supprimer le message de mort
             deathMessage.destroy();
-
             // Réinitialiser la couleur du joueur
             this.player.clearTint();
-
             // Réinitialiser la position du joueur à la position de départ
             this.restartSceneWithDelay(10);
             this.player.setPosition(50, 588);
@@ -123,7 +113,6 @@ export default class niveau3 extends Phaser.Scene {
       },
       this
     );
-
     this.plateforme_mobile = this.physics.add.sprite(
       3000,
       400,
@@ -132,7 +121,6 @@ export default class niveau3 extends Phaser.Scene {
     this.plateforme_mobile.body.allowGravity = false; // Désactiver la gravité pour la plateforme
     this.plateforme_mobile.body.immovable = true; // Rendre la plateforme immobile
     this.physics.add.collider(this.player, this.plateforme_mobile);
-
     // Création du tween de mouvement
     this.tween_mouvement = this.tweens.add({
       targets: [this.plateforme_mobile], // on applique le tween sur plateforme_mobile
@@ -149,36 +137,30 @@ export default class niveau3 extends Phaser.Scene {
     // Création du levier
     this.levier = this.physics.add.staticSprite(3100, 515, "img_levier");
     this.levier.active = false;
-
     this.clavier = this.input.keyboard.createCursorKeys();
     this.physics.add.collider(this.player, this.groupe_plateformes);
-
     // ajout d'une collision entre le joueur et le calque plateformes
     this.physics.add.collider(this.player, plateformeniv3);
-
     // redimentionnement du monde avec les dimensions calculées via tiled
     this.physics.world.setBounds(0, 0, 3200, 640);
     //  ajout du champs de la caméra de taille identique à celle du monde
     this.cameras.main.setBounds(0, 0, 3200, 640);
     // ancrage de la caméra sur le joueur
     this.cameras.main.startFollow(this.player);
-
     // extraction des poitns depuis le calque calque_ennemis, stockage dans tab_points
     groupe_ennemis = this.physics.add.group();
     const tab_points = carteDuNiveau.getObjectLayer("calque_ennemis");
     // Création de la collision entre le joueur et les ennemis
     this.physics.add.collider(this.player, groupe_ennemis, this.playerEnemyCollision, null, this);
-
     // on fait une boucle foreach, qui parcours chaque élements du tableau tab_points  
     // Ajout des ennemis au groupe
     tab_points.objects.forEach(point => {
       if (point.name == "ennemi") {
-        var nouvel_ennemi = this.physics.add.sprite(point.x, point.y, "img_ennemi");
+        var nouvel_ennemi = this.physics.add.sprite(point.x, point.y, "img_requin");
         groupe_ennemis.add(nouvel_ennemi);
         nouvel_ennemi.setGravity(0); // Désactive la gravité pour l'ennemi
         nouvel_ennemi.body.allowGravity = false;
         nouvel_ennemi.setVelocityX(500); // Définit la vitesse horizontale pour aller à droite
-
       }
     });
 
@@ -193,6 +175,7 @@ export default class niveau3 extends Phaser.Scene {
     });
 
   }
+
 
   update() {
     if (this.clavier.left.isDown) {
@@ -215,12 +198,10 @@ export default class niveau3 extends Phaser.Scene {
     if (this.physics.overlap(this.player, this.porte_fin) && Phaser.Input.Keyboard.JustDown(this.clavier.shift)) {
       // Affichez l'image "ercifin"
       this.ericfinImage = this.add.image(2900, 100, 'ericfin');
-
       // Ajoutez un délai de 5 secondes pour fermer l'image et changer de scène
       this.time.delayedCall(4000, () => {
         // Masquez l'image "ericfin"
         this.ericfinImage.visible = false;
-
         // Changez de scène
         this.scene.switch("selection");
       }, [], this);
@@ -238,10 +219,6 @@ export default class niveau3 extends Phaser.Scene {
       }
     }
 
-   
-
-
-
     groupe_ennemis.children.iterate(function (un_ennemi) {
       const distance = Phaser.Math.Distance.Between(un_ennemi.x, un_ennemi.y, this.player.x, this.player.y);
       if (distance < 400) {
@@ -255,17 +232,13 @@ export default class niveau3 extends Phaser.Scene {
     }, this);
 
     this.physics.overlap(this.player, groupe_ennemis, this.playerEnemyCollision, null, this);
-
     this.checkNearbyChest();
-
     this.input.keyboard.on('keydown-A', () => {
       if (this.physics.overlap(this.player, this.bouleEau)) {
         this.bouleEau.destroy();
         this.bouleEauRécupérée = true;
-
       }
     });
-
   }
 
   playerEnemyCollision(player, enemy) {
@@ -319,7 +292,6 @@ export default class niveau3 extends Phaser.Scene {
         this.bouleEauRécupérée = true; // Définir la boule d'eau comme récupérée
         this.bouleEau.destroy(); // Détruire la boule d'eau
       }
-
     }
   }
 
@@ -332,12 +304,10 @@ export default class niveau3 extends Phaser.Scene {
     this.coffre_ouvert = false;
   }
 
-
   tirerBouleEauJoueur() {
     if (this.bouleEauRécupérée) {
       const bouleDeau = this.physics.add.sprite(this.player.x, this.player.y, "boule_eau");
       bouleDeau.body.allowGravity = false;
-
       // Déterminez la direction dans laquelle le joueur est orienté
       const directionX = this.clavier.right.isDown ? 1 : this.clavier.left.isDown ? -1 : 0;
       const directionY = this.clavier.down.isDown ? 1 : this.clavier.up.isDown ? -1 : 0;
@@ -357,13 +327,12 @@ export default class niveau3 extends Phaser.Scene {
     ennemi.destroy();
   }
   fermerImage() {
-    // Masquer l'image "ericdeb"
+    // Masquer l'image "ericfdeb"
     this.ericdebImage.visible = false;
   }
   fermerErcifinImage() {
-    // Masquez l'image "ercifin"
+    // Masquez l'image "ericfin"
     this.ericfinImage.visible = false;
-    // Redirigez le joueur vers la scène de sélection
   }
 }
 

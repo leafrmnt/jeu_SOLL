@@ -3,13 +3,9 @@ import * as fct from "/src/js/fonctions.js";
 /***********************************************************************/
 /** VARIABLES GLOBALES 
 /***********************************************************************/
-
 var player; // désigne le sprite du joueur
 var clavier; // pour la gestion du clavier
 var groupe_plateformes;
-
-
-
 
 // définition de la classe "selection"
 export default class selection extends Phaser.Scene {
@@ -32,6 +28,7 @@ export default class selection extends Phaser.Scene {
     this.load.image("img_porte2", "src/assets/door2.png");
     this.load.image("img_porte3", "src/assets/door3.png");
     this.load.image("img_porte4", "src/assets/door4.png");
+    this.load.image("regles", "src/assets/regle.png");
     this.load.tilemapTiledJSON("carte", "src/assets/Menu.json");
 
   }
@@ -58,27 +55,34 @@ export default class selection extends Phaser.Scene {
     /****************************
      *  Ajout des portes   *
      ****************************/
-    this.porte1 = this.physics.add.staticSprite(470, 492, "img_porte1");
-    this.porte2 = this.physics.add.staticSprite(800, 492, "img_porte2");
-    this.porte3 = this.physics.add.staticSprite(1100, 492, "img_porte3");
-    this.porte4 = this.physics.add.staticSprite(1430, 492, "img_porte4");
+    this.porte1 = this.physics.add.staticSprite(470, 471, "img_porte1").setScale(0.7);
+    this.porte2 = this.physics.add.staticSprite(800, 477, "img_porte2").setScale(0.7);
+    this.porte3 = this.physics.add.staticSprite(1100, 474, "img_porte3").setScale(0.7);
+    this.porte4 = this.physics.add.staticSprite(1430, 472, "img_porte4").setScale(0.7);
 
-    this.add.text(450, 450, "Niveau 1", {
+
+    this.add.text(445, 410, "Niveau 1", {
       fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
       fontSize: "11pt"
     });
-    this.add.text(780, 450, "Niveau 2", {
+    this.add.text(778, 410, "Niveau 2", {
       fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
       fontSize: "11pt"
     });
-    this.add.text(1080, 450, "Niveau 3", {
+    this.add.text(1080, 410, "Niveau 3", {
       fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
       fontSize: "11pt"
     });
-    this.add.text(1370, 450, "Niveau Final", {
+    this.add.text(1390, 410, "Niveau Final", {
       fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
       fontSize: "11pt"
     });
+    // ajout nom jeu
+    this.add.text(300, 100, "AUX ARMES PEUFIENS !", {
+      fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
+      fontSize: "35pt"
+    });
+
     /****************************
      *  CREATION DU PERSONNAGE  *
      ****************************/
@@ -136,6 +140,9 @@ export default class selection extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, 1600, 640);
     this.cameras.main.setBounds(0, 0, 1600, 640);
     this.cameras.main.startFollow(player);
+    this.regles = this.add.image(400, 300, "regles");
+    this.regles.setVisible(false);
+    this.input.keyboard.on('keydown-R', this.toggleImage, this);
   }
 
   /***********************************************************************/
@@ -158,8 +165,7 @@ export default class selection extends Phaser.Scene {
     if (clavier.up.isDown && player.body.blocked.down) {
       player.setVelocityY(-330);
     }
-
-    if (Phaser.Input.Keyboard.JustDown(clavier.space) == true) {
+    if (Phaser.Input.Keyboard.JustDown(clavier.shift)) {
       if (this.physics.overlap(player, this.porte1))
         this.scene.switch("niveau1");
       if (this.physics.overlap(player, this.porte2))
@@ -169,9 +175,12 @@ export default class selection extends Phaser.Scene {
       if (this.physics.overlap(player, this.porte4))
         this.scene.switch("niveau4");
     }
+    this.regles.setPosition(player.x, player.y - 200);
+
+  }
+  toggleImage() {
+    this.regles.setVisible(!this.regles.visible);
+    this.reglesOuverte = this.regles.visible;
+
   }
 }
-
-/***********************************************************************/
-/** CONFIGURATION GLOBALE DU JEU ET LANCEMENT 
-/***********************************************************************/

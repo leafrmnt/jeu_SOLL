@@ -1,4 +1,3 @@
-
 var Tuiles_6;
 var abdellafin;
 export default class niveau1 extends Phaser.Scene {
@@ -15,7 +14,7 @@ export default class niveau1 extends Phaser.Scene {
     // Load game tiles
     this.load.image("Phaser_tree1", "src/assets/bgrd_tree1.png");
     this.load.image("Phaser_tree4", "src/assets/bgrd_tree4.png");
-    this.load.image("img_ennemi", "src/assets/img_ennemi.png");
+    this.load.image("img_ours", "src/assets/ours.png");
     this.load.image("Phaser_rock", "src/assets/env_rock.png");
     this.load.image("Phaser_tree5", "src/assets/env_trees.png");
     this.load.image("Phaser_background", "src/assets/main_background.png");
@@ -64,7 +63,7 @@ export default class niveau1 extends Phaser.Scene {
       fontSize: "22pt"
     });
     // Add a static sprite for the return door
-    this.porte_retour2 = this.physics.add.staticSprite(3100, 462, "img_porte2");
+    this.porte_retour2 = this.physics.add.staticSprite(3050, 430, "img_porte2");
     this.coffre_ferme = this.physics.add.sprite(260, 405, "img_coffre_ferme");
     this.coffre_ferme.setScale(0.20); // Réduire l'échelle de l'image de moitié
     this.coffre_ferme.setCollideWorldBounds(true); // Permettre la collision avec les bords du monde
@@ -97,7 +96,7 @@ export default class niveau1 extends Phaser.Scene {
       if (point.name === "ennemi") {
         console.log("ennemiCree")
         const randomVelocity = Phaser.Math.Between(40, 80); // Changer les valeurs selon votre besoin
-        var nouvel_ennemi = this.groupe_ennemis.create(point.x, point.y, "img_ennemi");
+        var nouvel_ennemi = this.groupe_ennemis.create(point.x, point.y, "img_ours");
         nouvel_ennemi.setVelocityX(-randomVelocity); // Utiliser la vitesse aléatoire
         nouvel_ennemi.direction = "gauche";
         nouvel_ennemi.setCollideWorldBounds(true);
@@ -121,7 +120,7 @@ export default class niveau1 extends Phaser.Scene {
       if (point.name === "ennemi") {
         console.log("ennemiCree");
         const randomVelocity = Phaser.Math.Between(40, 80); // Changer les valeurs selon votre besoin
-        var nouvel_ennemi = this.groupe_ennemis.create(point.x, point.y, "img_ennemi");
+        var nouvel_ennemi = this.groupe_ennemis.create(point.x, point.y, "img_ours");
         nouvel_ennemi.setVelocityX(-randomVelocity); // Utiliser la vitesse aléatoire
         nouvel_ennemi.direction = "gauche";
         nouvel_ennemi.setCollideWorldBounds(true); // Ajouter une collision avec les bords du monde
@@ -299,6 +298,3 @@ export default class niveau1 extends Phaser.Scene {
     // Redirigez le joueur vers la scène de sélection
   }
 }
-
-
-

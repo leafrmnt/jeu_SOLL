@@ -5,7 +5,6 @@ var coupDeLionel;
 
 export default class niveau2 extends Phaser.Scene {
 
-  // constructeur de la classe
   constructor() {
     super({
       key: "niveau2" 
@@ -175,7 +174,6 @@ export default class niveau2 extends Phaser.Scene {
   playerEnnemiCollision(player, ennemi) {
     // Arrêtez le mouvement du joueur
     player.setVelocity(0);
-    // Affichez un message ou une animation pour indiquer que le joueur est touché
     console.log('Le joueur est touché par un ennemi !');
     this.scene.restart();
   }
@@ -206,7 +204,6 @@ export default class niveau2 extends Phaser.Scene {
     }
   }
 
-  // Quand vous réinitialisez le coffre
   resetChest() {
     if (this.fleche) {
       this.fleche.destroy(); // Détruire la flèche si elle existe
@@ -227,19 +224,16 @@ export default class niveau2 extends Phaser.Scene {
       const velocityX = directionX / norm * 200;
       const velocityY = directionY / norm * 200;
       flecheArme.setVelocity(velocityX, velocityY);
-      //console.log(groupe_ennemis); 
       this.physics.add.collider(flecheArme, groupe_ennemis, this.bouleToucheBoss, null, this);
     }
   }
 
   bouleToucheBoss(flecheArme, ennemi) {
-    //console.log(bouleDeau); 
     console.log(" ");
     flecheArme.destroy();
     ennemi.destroy();
     ennemisTues++;
     coupDeLionel.play();
-    //coupDeLionel.stop();
   }
 
   pickupArrow() {

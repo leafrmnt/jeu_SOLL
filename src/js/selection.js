@@ -7,10 +7,10 @@ var player; // désigne le sprite du joueur
 var clavier; // pour la gestion du clavier
 var groupe_plateformes;
 
-// définition de la classe "selection"
+
 export default class selection extends Phaser.Scene {
   constructor() {
-    super({ key: "selection" }); // mettre le meme nom que le nom de la classe
+    super({ key: "selection" }); 
   }
 
   /***********************************************************************/
@@ -98,10 +98,7 @@ export default class selection extends Phaser.Scene {
     /***************************
      *  CREATION DES ANIMATIONS *
      ****************************/
-    // dans cette partie, on crée les animations, à partir des spritesheet
-    // chaque animation est une succession de frame à vitesse de défilement défini
-    // une animation doit avoir un nom. Quand on voudra la jouer sur un sprite, on utilisera la méthode play()
-    // creation de l'animation "anim_tourne_gauche" qui sera jouée sur le player lorsque ce dernier tourne à gauche
+   
     this.anims.create({
       key: "anim_tourne_gauche", // key est le nom de l'animation : doit etre unique poru la scene.
       frames: this.anims.generateFrameNumbers("img_perso", {

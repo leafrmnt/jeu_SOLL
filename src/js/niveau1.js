@@ -11,7 +11,6 @@ export default class niveau1 extends Phaser.Scene {
   }
 
   preload() {
-    // Load game tiles
     this.load.image("Phaser_tree1", "src/assets/bgrd_tree1.png");
     this.load.image("Phaser_tree4", "src/assets/bgrd_tree4.png");
     this.load.image("img_ours", "src/assets/ours.png");
@@ -23,22 +22,15 @@ export default class niveau1 extends Phaser.Scene {
     this.load.image("abdellah2", "src/assets/abdellah2.png");
     this.load.image("img_porte2", "src/assets/door2.png");
     this.load.image("couteau", "src/assets/couteau.png");
-    
     this.load.image("img_coffre_ferme", "src/assets/coffre_ferme.png");
     this.load.image("img_coffre_ouvert", "src/assets/coffre_ouvert.png");
     this.load.audio("abdella", "src/assets/Abdella_bg.mp3");
-
-
-
-    // Load the map
     this.load.tilemapTiledJSON("carte1", "src/assets/map52.json");
   }
 
   create() {
-    // Load the map
     this.carteDuNiveau1 = this.add.tilemap("carte1");
 
-    // Load tilesets
     const tileset1 = this.carteDuNiveau1.addTilesetImage("bgrd_tree1", "Phaser_tree1");
     const tileset2 = this.carteDuNiveau1.addTilesetImage("bgrd_tree4", "Phaser_tree4");
     const tileset4 = this.carteDuNiveau1.addTilesetImage("env_rock", "Phaser_rock");
@@ -46,7 +38,6 @@ export default class niveau1 extends Phaser.Scene {
     const tileset6 = this.carteDuNiveau1.addTilesetImage("main_background", "Phaser_background");
     const tileset7 = this.carteDuNiveau1.addTilesetImage("Phaser_sol", "Phaser_sol");
 
-    // Create map layers
     const Tuiles_1 = this.carteDuNiveau1.createLayer("Tuiles_1", tileset6);
     const Tuiles_8 = this.carteDuNiveau1.createLayer("Tuiles_8", tileset2);
     const Tuiles_7 = this.carteDuNiveau1.createLayer("Tuiles_7", tileset1);
@@ -54,15 +45,12 @@ export default class niveau1 extends Phaser.Scene {
     const Tuiles_4 = this.carteDuNiveau1.createLayer("Tuiles_4", tileset4);
     Tuiles_6 = this.carteDuNiveau1.createLayer("Tuiles_6", tileset7);
 
-    // Set collision properties for solid tiles
     Tuiles_6.setCollisionByProperty({ estSolide: true });
 
-    // Add a distinctive level text
     this.add.text(400, 100, "Vous êtes dans le niveau 1", {
       fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
       fontSize: "22pt"
     });
-    // Add a static sprite for the return door
     this.porte_retour2 = this.physics.add.staticSprite(3050, 430, "img_porte2");
     this.coffre_ferme = this.physics.add.sprite(260, 405, "img_coffre_ferme");
     this.coffre_ferme.setScale(0.20); // Réduire l'échelle de l'image de moitié
@@ -70,7 +58,7 @@ export default class niveau1 extends Phaser.Scene {
     this.coffre_ferme.body.setAllowGravity(false); // Désactiver la gravité pour le coffre
     this.physics.add.collider(this.coffre_ferme, this.groupe_plateformes); // Ajouter une collision avec les plateformes
     this.resetChest(); // Réinitialiser l'état du coffre
-    // Add player sprite
+
     this.player = this.physics.add.sprite(100, 400, "img_perso");
     this.player.refreshBody();
     this.player.setBounce(0.2);
@@ -78,35 +66,33 @@ export default class niveau1 extends Phaser.Scene {
     this.player.setCollideWorldBounds(true);
     this.clavier = this.input.keyboard.createCursorKeys();
     this.physics.add.collider(this.player, Tuiles_6);
-    // Get the object layer for enemies
+
     const calque_ennemis = this.carteDuNiveau1.getObjectLayer("calque_ennemis");
-    // Set world and camera bounds
+
     this.physics.world.setBounds(0, 0, 3200, 640);
     this.cameras.main.setBounds(0, 0, 3200, 640);
     this.cameras.main.startFollow(this.player);
 
-    // Create a group for enemies
+
     this.groupe_ennemis = this.physics.add.group();
 
     // Ajouter une collision entre le joueur et les ennemis
     this.physics.add.collider(this.player, this.groupe_ennemis, this.playerToucheEnnemi, null, this);
 
-    // Create enemies from object layer
     calque_ennemis.objects.forEach(point => {
       if (point.name === "ennemi") {
         console.log("ennemiCree")
-        const randomVelocity = Phaser.Math.Between(40, 80); // Changer les valeurs selon votre besoin
+        const randomVelocity = Phaser.Math.Between(40, 80); 
         var nouvel_ennemi = this.groupe_ennemis.create(point.x, point.y, "img_ours");
         nouvel_ennemi.setVelocityX(-randomVelocity); // Utiliser la vitesse aléatoire
         nouvel_ennemi.direction = "gauche";
         nouvel_ennemi.setCollideWorldBounds(true);
         // Ajouter la gravité au monstre pour le faire sauter
         nouvel_ennemi.setGravityY(300);
-        //nouvel_ennemi.play("anim_tourne_gauche", true);
+        
       }
     });
 
-    // Add collision between player and enemy layer
     this.physics.add.collider(this.groupe_ennemis, Tuiles_6);
     this.physics.add.collider(this.groupe_ennemis, this.player, this.playerToucheEnnemi, null, this);
     this.abdellah1 = this.add.image(145, 200, 'abdellah1');
@@ -119,7 +105,7 @@ export default class niveau1 extends Phaser.Scene {
     calque_ennemis.objects.forEach(point => {
       if (point.name === "ennemi") {
         console.log("ennemiCree");
-        const randomVelocity = Phaser.Math.Between(40, 80); // Changer les valeurs selon votre besoin
+        const randomVelocity = Phaser.Math.Between(40, 80); 
         var nouvel_ennemi = this.groupe_ennemis.create(point.x, point.y, "img_ours");
         nouvel_ennemi.setVelocityX(-randomVelocity); // Utiliser la vitesse aléatoire
         nouvel_ennemi.direction = "gauche";
@@ -252,12 +238,12 @@ export default class niveau1 extends Phaser.Scene {
 
   playerToucheEnnemi(player, ennemi) {
     console.log("Le joueur est touché par une boule de feu !");
-    this.player.setTint(0xff0000); // Optionnel : changer la teinte du joueur en rouge
+    this.player.setTint(0xff0000); 
     this.physics.pause(); // Mettre en pause la physique du jeu
     this.player.setVelocity(0, 0); // Arrêter le mouvement du joueur
-    this.player.anims.play("anim_face"); // Optionnel : jouer l'animation d'arrêt du joueur
+    this.player.anims.play("anim_face"); 
     this.time.delayedCall(1000, () => { // Redémarrer le niveau après 1 seconde
-      this.player.clearTint(); // Optionnel : Réinitialiser la teinte du joueur
+      this.player.clearTint(); 
       this.scene.restart();
     });
   }
@@ -277,7 +263,6 @@ export default class niveau1 extends Phaser.Scene {
   }
   
   bouleToucheBoss(couteau, ennemi) {
-    //console.log(bouleDeau);
     console.log(" ");
     couteau.destroy();
     ennemi.destroy();
@@ -293,8 +278,6 @@ export default class niveau1 extends Phaser.Scene {
 
   }
   fermerErcifinImage() {
-    // Masquez l'image "ercifin"
     this.abdellah2.visible = false;
-    // Redirigez le joueur vers la scène de sélection
   }
 }

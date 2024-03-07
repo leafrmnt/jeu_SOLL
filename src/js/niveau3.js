@@ -2,10 +2,9 @@ var plateformeniv3;
 var groupe_ennemis;
 
 export default class niveau3 extends Phaser.Scene {
-  // constructeur de la classe
   constructor() {
     super({
-      key: "niveau3" //  ici on précise le nom de la classe en tant qu'identifiant
+      key: "niveau3" 
     });
     this.tween_mouvement;
     this.plateforme_mobile;
@@ -13,9 +12,7 @@ export default class niveau3 extends Phaser.Scene {
     this.bouleEauRecuperee = false;
   }
   preload() {
-    // chargement tuiles de jeu
     this.load.image("Phaser_tuilesdejeu", "src/assets/jeu_de_tuile_niveau3.png");
-    // chargement de la carte
     this.load.tilemapTiledJSON("carte3", "src/assets/map3.json");
     this.load.image("img_plateforme_mobile", "src/assets/tiny_blue_platform.png");
     this.load.image("img_levier", "src/assets/levier.png");
@@ -29,34 +26,28 @@ export default class niveau3 extends Phaser.Scene {
   }
 
   create() {
-    // chargement de la carte
     const carteDuNiveau = this.add.tilemap("carte3");
-    // chargement du jeu de tuiles
     const tileset1 = carteDuNiveau.addTilesetImage(
       "jeu_de_tuile_niveau3",
       "Phaser_tuilesdejeu"
     );
 
-    // chargement du calque calque_background
     const fondniv3 = carteDuNiveau.createLayer(
       "Fond",
       tileset1
     );
 
-    // chargement du calque calque_background_2
     plateformeniv3 = carteDuNiveau.createLayer(
       "plateforme",
       tileset1
     );
 
-    // chargement du calque calque_plateformes
     const deconiv3 = carteDuNiveau.createLayer(
       "deco",
       tileset1
     );
 
     // définition des tuiles de plateformes qui sont solides
-    // utilisation de la propriété estSolide
     plateformeniv3.setCollisionByProperty({ estSolide: true });
 
     // ajout d'un texte distintcif  du niveau
@@ -84,7 +75,7 @@ export default class niveau3 extends Phaser.Scene {
     // on met en place l'écouteur sur les bornes du monde
     // Dans la fonction de rappel de l'événement worldbounds
     this.player.body.world.on(
-      "worldbounds", // evenement surveillé
+      "worldbounds", 
       (body, up, down, left, right) => {
         // on verifie si la hitbox qui est rentrée en collision est celle du player,
         // et si la collision a eu lieu sur le bord inférieur du player
@@ -327,7 +318,7 @@ export default class niveau3 extends Phaser.Scene {
     ennemi.destroy();
   }
   fermerImage() {
-    // Masquer l'image "ericfdeb"
+    // Masquer l'image "ericdeb"
     this.ericdebImage.visible = false;
   }
   fermerErcifinImage() {

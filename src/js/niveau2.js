@@ -6,15 +6,13 @@ var coupDeLionel;
 
 export default class niveau2 extends Phaser.Scene {
 
-  // constructeur de la classe
   constructor() {
     super({
-      key: "niveau2" //  ici on précise le nom de la classe en tant qu'identifiant
+      key: "niveau2" 
     });
-    //this.groupe_ennemis; // Déclaration de la variable groupe_ennemis
     this.flecheRecuperee = false;
-    this.coffre_ouvert = false; // Utilisé pour suivre l'état d'ouverture du coffre
-    this.spriteCoffreOuvert = null; // Utilisé pour stocker la référence au sprite du coffre ouvert
+    this.coffre_ouvert = false; 
+    this.spriteCoffreOuvert = null; 
 
   }
 
@@ -30,6 +28,9 @@ export default class niveau2 extends Phaser.Scene {
     this.load.image("fleche_arme", "src/assets/fleches.png");
     this.load.image("img_ennemi", "src/assets/ennemi.png");
     this.load.audio("lionel", "src/assets/Lionel.mp3");
+    this.load.image("lioneldeb", "src/assets/Lioneldeb.png");
+    this.load.image("lionelfin", "src/assets/Lionelfin.png");
+
 
 
     // chargement de la carte
@@ -55,10 +56,9 @@ export default class niveau2 extends Phaser.Scene {
     // Chargement du calque calque_background_2
     plateformeniv2 = carteDuNiveau.createLayer(
       "plateforme_niveau2",
-      [tileset2, tileset3, tileset4] // Tableau de tous les tilesets nécessaires pour ce calque
+      [tileset2, tileset3, tileset4] 
     );
 
-    // définition des tuiles de plateformes qui sont solides
     // utilisation de la propriété estSolide
     plateformeniv2.setCollisionByProperty({ estSolide: true });
 
@@ -148,6 +148,8 @@ export default class niveau2 extends Phaser.Scene {
 
     this.physics.add.collider(this.player, groupe_ennemis, this.playerEnnemiCollision, null, this);
 
+    this.afficherImageTemporaire();
+
 
   }
 
@@ -209,15 +211,10 @@ export default class niveau2 extends Phaser.Scene {
 
     this.checkNearbyChest();
     this.input.keyboard.on('keydown-A', () => {
-
       if (this.physics.overlap(this.player, this.flechearme)) {
-
         this.flechearme.destroy();
-
         this.flecheRécupérée = true;
-
       }
-
     });
 
     if (this.input.keyboard.addKey('A').isDown) {
@@ -227,9 +224,28 @@ export default class niveau2 extends Phaser.Scene {
     }
 
     if (ennemisTues >= 2 && this.physics.overlap(this.player, this.porte_fin) && Phaser.Input.Keyboard.JustDown(this.clavier.shift)) {
-      this.scene.switch("selection");
+      this.afficherImageTemporaire2();
+      setTimeout(() => {
+        this.scene.switch("selection");
+    }, 3000); 
   }
-    
+
+  }
+
+  afficherImageTemporaire() {
+    const lioneldeb = this.add.image(150, 150, 'lioneldeb');
+    lioneldeb.setScale(0.75);
+    setTimeout(() => {
+      lioneldeb.destroy(); 
+    }, 10000); 
+  }
+
+  afficherImageTemporaire2() {
+    const lionelfin = this.add.image(3000, 150, 'lionelfin');
+    lionelfin.setScale(0.75);
+    setTimeout(() => {
+      lionelfin.destroy(); 
+    }, 10000); 
   }
 
   playerEnnemiCollision(player, ennemi) {

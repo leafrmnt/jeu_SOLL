@@ -1,4 +1,3 @@
-
 var calqueniv1;
 
 export default class niveau4 extends Phaser.Scene {
@@ -33,6 +32,7 @@ export default class niveau4 extends Phaser.Scene {
   }
 
   create() {
+    //MAP//
     const carteDuNiveau = this.add.tilemap("carte4");
     const tileset1 = carteDuNiveau.addTilesetImage("red", "Phaser_tuilesdejeu");
     const tileset2 = carteDuNiveau.addTilesetImage("Nebula Red", "Phaser_ciel");
@@ -49,11 +49,14 @@ export default class niveau4 extends Phaser.Scene {
       fontSize: "22pt"
     });
 
+    //IMAGE DEBUT//
     this.dartiesdebutImage = this.add.image(300, 200, 'dartiesdebut');
     this.time.delayedCall(10000, this.fermerImage, [], this);
 
-
+    //PORTE//
     this.porte_retour = this.physics.add.staticSprite(100, 530, "img_porte4");
+
+    //
     this.coffre_ferme = this.physics.add.sprite(400, 530, "img_coffre_ferme");
     this.coffre_ferme.setScale(0.20);
     this.coffre_ferme.setCollideWorldBounds(true);
@@ -109,9 +112,9 @@ export default class niveau4 extends Phaser.Scene {
 
     // Création d'un groupe pour les boules de feu du joueur
     this.boulesDeFeuJoueur = this.physics.add.group({
-      defaultKey: "Phaser_boule_de_feu", // Clé par défaut pour les sprites des boules de feu
-      maxSize: -1, // Taille maximale du groupe, -1 signifie illimité
-      runChildUpdate: true // Indique que la mise à jour des enfants (boules de feu) doit être exécutée
+      defaultKey: "Phaser_boule_de_feu", 
+      maxSize: -1, 
+      runChildUpdate: true 
     });
     this.physics.add.collider(this.boulesDeFeuJoueur, this.monstre, this.bouleDeFeuToucheBoss, null, this);
 

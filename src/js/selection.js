@@ -24,9 +24,9 @@ export default class selection extends Phaser.Scene {
     this.load.image("sol", "src/assets/Solmenu.png");
     this.load.image("fond", "src/assets/FondMenu.png");
     this.load.image("deco", "src/assets/Decomenu.png");
-    this.load.spritesheet("img_perso", "src/assets/dude.png", {
+    this.load.spritesheet("img_perso", "src/assets/dude2.png", {
       frameWidth: 32,
-      frameHeight: 48
+      frameHeight: 32
     });
     this.load.image("img_porte1", "src/assets/door1.png");
     this.load.image("img_porte2", "src/assets/door2.png");

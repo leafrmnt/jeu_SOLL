@@ -16,6 +16,8 @@ export default class niveau4 extends Phaser.Scene {
     this.load.image("boule_feu", "src/assets/boule_feu.png");
     this.load.image("boule_eau", "src/assets/boule_eau.png");
     this.load.image("couteau", "src/assets/couteau.png");
+    this.load.image("dartiesdebut", "src/assets/dartiesdeb.png");
+    this.load.image("image_victoire", "src/assets/dartiesfin.png");
     this.load.spritesheet("boss", "src/assets/boss.png", {
       frameWidth: 160,
       frameHeight: 128
@@ -36,6 +38,11 @@ export default class niveau4 extends Phaser.Scene {
       fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif',
       fontSize: "22pt"
     });
+    //IMAGE DEBUT//
+    this.dartiesdebutImage = this.add.image(300, 200, 'dartiesdebut');
+    this.time.delayedCall(10000, this.fermerImage, [], this);
+
+    //PORTE//
     this.porte_retour = this.physics.add.staticSprite(100, 490, "img_porte4");
     this.coffre_ferme = this.physics.add.sprite(400, 530, "img_coffre_ferme");
     this.coffre_ferme.setScale(0.20); // Réduire l'échelle de l'image de moitié
@@ -186,9 +193,10 @@ export default class niveau4 extends Phaser.Scene {
       }
     }
     
-
     this.majBarreDeVie();
     if (this.vieBoss <= 0) {
+      // Si les points de vie du boss sont épuisés, déclencher l'événement de victoire
+      this.victoire();
     }
 
     // DEPLACEMENT BOSS VERS JOUEUR //
@@ -251,6 +259,17 @@ export default class niveau4 extends Phaser.Scene {
     }
     this.coffre_ferme.setVisible(true);
     this.coffre_ouvert = false;
+  }
+  fermerImage() {
+    this.dartiesdebutImage.visible = false;
+  }
+  victoire() {
+    this.monstre.destroy();
+    const imageVictoire = this.add.image(this.monstre.x, this.monstre.y, "image_victoire");
+    imageVictoire.setOrigin(0.5, 0.5); 
+    imageVictoire.setScale(1.5); 
+    this.barreDeVie.clear();
+
   }
 }
 
